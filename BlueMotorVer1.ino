@@ -19,10 +19,12 @@
 #define LED_GREEN 13					// LED Green
 #define SERVO_ONE 12					// Servo one
 
-
-
 // SoftwareSerial - BlueTooth HC-05
 SoftwareSerial BTSerial(RX_PIN,TX_PIN);	// atmega RX / TX
+
+// other variables
+String response;
+String startChar = "~", endChar = "#";
 
 // char buffer
 //char command[6];
@@ -33,9 +35,9 @@ void setup()
 	//Serial.begin(9600);
 	BTSerial.begin(9600);
 
-	BTSerial.flush();
+	//BTSerial.flush();
 
-	BTSerial.println("Bluetooth ready!");
+	BTSerial.println("~Bluetooth ready!#");
 	//Serial.println("Bluetooth ready!");
 
 	// leds
@@ -47,34 +49,31 @@ void setup()
 
 void loop()
 {
-	// READ ONE CHAR
-	// check if BT available
 	
+	// check if BT is availiable
 	if(BTSerial.available()){
 
 		char ch = BTSerial.read();
 
-		BTSerial.println();
-		//Serial.println();
-		BTSerial.write("~Rece+ived: +");
-		//Serial.write("Received: ");
-		BTSerial.print(ch);
-		BTSerial.println("#");
-		//Serial.println(ch);
+		// build response message
+		response = startChar + "Received: " + ch + endChar;
+		BTSerial.println(response);
 
-		// small delay for data transfer - eliminate missed transmissions
-		delay(10);
-
+		// check which char received
 		if(ch == 'x'){
-			turnLedON(LED_GREEN);			
+			turnLedON(LED_GREEN);
 		}else if (ch == 'y'){
 			turnLedOFF(LED_GREEN);
 		}else{
-			BTSerial.println("~... Unkn+own co+mmand!#");
-			//Serial.println(" ... Unknown command!");
-			// do nothing here
+			// unknown command - do nothing
+			//BTSerial.println("~Unknown command!#");
 		}
+
+		// small delay for data transfer - eliminate missed transmissions
+		delay(10);
 	}
+
+	response = "";
 	
 	/*
 	// READ STRING
