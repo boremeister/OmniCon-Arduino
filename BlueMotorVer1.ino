@@ -3,8 +3,8 @@
 /*
 
 	BlueMotor ver 1
-	Author: Borko Horvat
-	Date: 19.10.2014 - 7.12.2014
+	Author: boremeister
+	Date: 19.10.2014 - 8.12.2014
 
 */
 
@@ -24,10 +24,11 @@ SoftwareSerial BTSerial(RX_PIN,TX_PIN);	// atmega RX / TX
 
 // other variables
 String response;
-String startChar = "~", endChar = "#";
+String startString = "~", endString = "#";
+char endChar = '#';
 
-// char buffer
-//char command[6];
+// command array
+char command[7];
 
 void setup()
 {
@@ -50,63 +51,64 @@ void setup()
 void loop()
 {
 	
-	// check if BT is availiable
-	if(BTSerial.available()){
+	// READ / PREPARE COMMAND
 
-		char ch = BTSerial.read();
-
-		// build response message
-		response = startChar + "Received: " + ch + endChar;
-		BTSerial.println(response);
-
-		// check which char received
-		if(ch == 'x'){
-			turnLedON(LED_GREEN);
-		}else if (ch == 'y'){
-			turnLedOFF(LED_GREEN);
-		}else{
-			// unknown command - do nothing
-			//BTSerial.println("~Unknown command!#");
-		}
-
-		// small delay for data transfer - eliminate missed transmissions
-		delay(10);
-	}
-
-	response = "";
-	
-	/*
-	// READ STRING
-
-	// position for command buffer
-	int i = 0;
+	int i = 0;	// position for command buffer
+	char *response = ""; // prepare response
 
 	while(BTSerial.available()){
+		
 		//small delay to allow input buffer to fill
 		delay(10);
 
+		// read char from BT module
 		char ch = BTSerial.read();	
 
-		// check if end
-		if(ch == 'e'){
-			BTSerial.println("Read end of command!");
-			command[i] = '\0';	// command end
-			turnLedON(LED_GREEN);
-			break;
-		} else {
-			BTSerial.println("Read ch: " + ch);
+		/*
+			build command:
+			* until end character received 
+			* check that command is not too long
+		*/
+
+		if (ch != endChar && i < 6){
+
+			// add received char into command*
 			command[i] = ch;
 			i = i + 1;
 		}
-	}
-	*/
+		else {
 
+			// command ended or too long
+			command[i] = '\0';	// command end - string has to be "null terminated"
+			strncpy(response, command, i+1);
+
+			// send response
+			BTSerial.println(startString + response + endString);
+
+			// EXECUTE COMMAND
+			executeCommand(command);
+		}
+	}
 
 	// delay for loop
 	delay(1000);
+
 }
 
-// helper methods
+// OTHER METHODS
+
+void executeCommand(char* c){
+
+	// execute command
+	if (c[0] == '1'){
+		turnLedON(LED_GREEN);
+	}
+	else{
+		turnLedOFF(LED_GREEN);
+	}
+
+}
+
 void turnLedON(int pin){
 	digitalWrite(pin, HIGH);
 }
