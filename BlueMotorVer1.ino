@@ -4,7 +4,6 @@
 
 	BlueMotor ver 1
 	Author: boremeister
-	Date: 19.10.2014 - 8.12.2014
 
 */
 
@@ -16,9 +15,12 @@
 #define DEBUG_MODE 1					// DEBUG_MODE mode (1 - on, 0 - off)
 #define RX_PIN 7						// Bluetooth TX pin (HC-05 TX)
 #define TX_PIN 8						// Bluetooth RX pin (HC-05 RX)
-#define LED_GREEN 13					// LED Green
 #define SERVO_1 9						// Servo 1
-#define SERVO_2 10						// Servo 2
+//#define SERVO_2 10					// Servo 2
+#define LED_WHITE 10					// LED White
+#define LED_RED 11						// LED Red
+#define LED_YELLOW 12					// LED Yellow
+#define LED_GREEN 13					// LED Green
 
 // SoftwareSerial - BlueTooth HC-05
 SoftwareSerial BTSerial(RX_PIN,TX_PIN);	// atmega RX / TX
@@ -51,6 +53,9 @@ void setup()
 	//Serial.println("Bluetooth ready!");
 
 	// leds
+	pinMode(LED_WHITE, OUTPUT);
+	pinMode(LED_RED, OUTPUT);
+	pinMode(LED_YELLOW, OUTPUT);
 	pinMode(LED_GREEN, OUTPUT);
 
 	// servos
@@ -81,9 +86,9 @@ void loop()
 		char ch = BTSerial.read();	
 
 		/*
-			build command:
-			* until end character received 
-			* check that command is not too long
+		*	build command:
+		*	* until end character received 
+		*	* check that command is not too long
 		*/
 
 		if (ch != endChar && i < 6){
@@ -125,22 +130,46 @@ void executeCommandWithCheck(char* c){
 void executeCommand(char* c){
 
 	// execute command
+
+	/*
+	* LEDs - only for testing
+	*/
 	if (c[0] == '1'){
+		turnLedON(LED_WHITE);
+	}
+	else{
+		turnLedOFF(LED_WHITE);
+	}
+
+	if (c[1] == '1'){
+		turnLedON(LED_RED);
+	}
+	else{
+		turnLedOFF(LED_RED);
+	}
+
+	if (c[2] == '1'){
+		turnLedON(LED_YELLOW);
+	}
+	else{
+		turnLedOFF(LED_YELLOW);
+	}
+
+	if (c[3] == '1'){
 		turnLedON(LED_GREEN);
 	}
 	else{
 		turnLedOFF(LED_GREEN);
 	}
 
-	/*
-	
-	command list
-
-	servo 1 - 0 1(smer vrtenja) XYZ (kot ~ 0-180)
-	servo 2 - 1 1(smer vrtenja) XYZ (kot ~ 0-180)
-	DC 1 - 2 1/0 (smer vrtenja ~ 1 - naprej, 0 - nazaj) XYZ (hitrost ~ 0-100)
-	DC 2 - 3 1/0 (smer vrtenja ~ 1 - naprej, 0 - nazaj) XYZ (hitrost ~ 0-100)
-	
+	/* 
+	* command list
+	* 
+	* servo 1 - 0 1(smer vrtenja) XYZ (kot ~ 0-180)
+	* servo 2 - 1 1(smer vrtenja) XYZ (kot ~ 0-180)
+	* DC 1 - 2 1/0 (smer vrtenja ~ 1 - naprej, 0 - nazaj) XYZ (hitrost ~ 0-100)
+	* DC 2 - 3 1/0 (smer vrtenja ~ 1 - naprej, 0 - nazaj) XYZ (hitrost ~ 0-100)
+	*
 	*/
 
 	char motor = c[0];	// motor type
