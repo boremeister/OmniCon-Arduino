@@ -112,7 +112,7 @@ void loop()
 	}
 
 	// delay for loop
-	//delay(1000);
+	//delay(100);
 
 }
 
@@ -136,6 +136,7 @@ void executeCommand(char* c){
 	*/
 	if (c[0] == '1'){
 		turnLedON(LED_WHITE);
+		servo1.write(0);
 	}
 	else{
 		turnLedOFF(LED_WHITE);
@@ -143,6 +144,7 @@ void executeCommand(char* c){
 
 	if (c[1] == '1'){
 		turnLedON(LED_RED);
+		servo1.write(60);
 	}
 	else{
 		turnLedOFF(LED_RED);
@@ -150,6 +152,7 @@ void executeCommand(char* c){
 
 	if (c[2] == '1'){
 		turnLedON(LED_YELLOW);
+		servo1.write(120);
 	}
 	else{
 		turnLedOFF(LED_YELLOW);
@@ -157,6 +160,7 @@ void executeCommand(char* c){
 
 	if (c[3] == '1'){
 		turnLedON(LED_GREEN);
+		servo1.write(180);
 	}
 	else{
 		turnLedOFF(LED_GREEN);
