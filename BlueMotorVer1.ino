@@ -83,7 +83,7 @@ void loop()
 		delay(10);
 
 		// read char from BT module
-		char ch = BTSerial.read();	
+		char ch = BTSerial.read();
 
 		/*
 		*	build command:
@@ -104,7 +104,8 @@ void loop()
 			strncpy(response, command, i+1);
 
 			// send response
-			BTSerial.println(startString + response + endString);
+			//BTSerial.println(startString + response + endString);
+			BTSerial.println(startString + command[0] + command[1] + command[2] + command[3] + command[4] + endString);
 
 			// EXECUTE COMMAND
 			executeCommandWithCheck(command);
@@ -134,9 +135,11 @@ void executeCommand(char* c){
 	/*
 	* LEDs - only for testing
 	*/
+	/*
 	if (c[0] == '1'){
 		turnLedON(LED_WHITE);
-		servo1.write(0);
+		servo1.write(30);
+		delay(10);
 	}
 	else{
 		turnLedOFF(LED_WHITE);
@@ -145,6 +148,7 @@ void executeCommand(char* c){
 	if (c[1] == '1'){
 		turnLedON(LED_RED);
 		servo1.write(60);
+		delay(10);
 	}
 	else{
 		turnLedOFF(LED_RED);
@@ -153,6 +157,7 @@ void executeCommand(char* c){
 	if (c[2] == '1'){
 		turnLedON(LED_YELLOW);
 		servo1.write(120);
+		delay(10);
 	}
 	else{
 		turnLedOFF(LED_YELLOW);
@@ -160,11 +165,14 @@ void executeCommand(char* c){
 
 	if (c[3] == '1'){
 		turnLedON(LED_GREEN);
-		servo1.write(180);
+		servo1.write(150);
+		delay(10);
+		//servoTest(servo1);
 	}
 	else{
 		turnLedOFF(LED_GREEN);
 	}
+	*/
 
 	/* 
 	* command list
@@ -190,6 +198,10 @@ void executeCommand(char* c){
 	int trojka = c[4] - '0';
 	int angleOrSpeed = enka * 100 + dvojka * 10 + trojka;
 
+	// check if motor not weird char
+	//if (motor != '0' || motor != '1' || motor != '2' || motor != '3')
+	//	motor = '0';
+
 	switch (motor){
 		case '0':
 
@@ -207,7 +219,7 @@ void executeCommand(char* c){
 			* SERVO motor 2
 			*/
 
-			setServoAngle(motor, angleOrSpeed);
+			//setServoAngle(motor, angleOrSpeed);
 
 			break;
 
@@ -217,7 +229,7 @@ void executeCommand(char* c){
 			* DC motor 1
 			*/
 
-			setDcSpeed(motor, direction, angleOrSpeed);
+			//setDcSpeed(motor, direction, angleOrSpeed);
 
 			break;
 
@@ -227,7 +239,7 @@ void executeCommand(char* c){
 			* DC motor 2
 			*/
 
-			setDcSpeed(motor, direction, angleOrSpeed);
+			//setDcSpeed(motor, direction, angleOrSpeed);
 
 			break;
 
@@ -255,7 +267,7 @@ void setServoAngle(char motorNum, int val){
 	if (motorNum == '0'){
 		// servo 1
 		servo1.write(val);
-		delay(10);
+		delay(15);
 	}
 	else if (motorNum = '1'){
 		// servo 2
